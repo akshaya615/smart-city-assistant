@@ -52,4 +52,9 @@ Others	               Uvicorn, dotenv, requests
 🧑‍💻 Developed By
 Akshaya – Final Year CS Student
 GitHub: @akshaya615
+## 📽️ Smart City Assistant – Demo Video
+
+🎬 Watch the presentation demo of our project here:  
+👉 [Smart City Assistant Video](https://drive.google.com/file/d/131jmpCChzLpj1e57a4xU5jEp-NaQjGyS/view?usp=sharing)
+
 
