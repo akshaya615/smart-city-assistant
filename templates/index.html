@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sustainable Smart City Assistant</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"/>
+  <style>
+    :root {
+      --green: #2e7d32;
+      --shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      --bg-light: #ffffff;
+      --text-light: #222;
+      --bg-dark: #121212;
+      --text-dark: #e0e0e0;
+      --card-dark: #1f1f1f;
+    }
+
+    html[data-theme='dark'] {
+      background-color: var(--bg-dark);
+      color: var(--text-dark);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url("/static/smartcity2.jpeg") center/cover no-repeat fixed;
+      color: var(--text-light);
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    html[data-theme='dark'] body {
+      background-color: rgba(0, 0, 0, 0.85);
+      color: var(--text-dark);
+    }
+
+    .toggle-mode {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      background: var(--green);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 1000;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 1rem;
+    }
+
+    html[data-theme='dark'] header {
+      background: rgba(40, 40, 40, 0.85);
+    }
+
+    .logo-img {
+      width: 70px;
+      border-radius: 8px;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      color: var(--green);
+    }
+
+    .subtitle {
+      color: #444;
+    }
+
+    html[data-theme='dark'] .subtitle {
+      color: #aaa;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+
+    .module-card {
+      background: white;
+      border-radius: 12px;
+      padding: 2rem 1rem;
+      text-align: center;
+      box-shadow: var(--shadow);
+      cursor: pointer;
+    }
+
+    html[data-theme='dark'] .module-card {
+      background: var(--card-dark);
+    }
+
+    .module-icon {
+      font-size: 2.5rem;
+      color: var(--green);
+      margin-bottom: 1rem;
+    }
+
+    .dialog-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .dialog-overlay.active {
+      display: flex;
+    }
+
+    .dialog-box {
+      background: white;
+      padding: 2rem;
+      width: 90%;
+      max-width: 600px;
+      border-radius: 10px;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    html[data-theme='dark'] .dialog-box {
+      background: var(--card-dark);
+      color: var(--text-dark);
+    }
+
+    .dialog-input {
+      width: 100%;
+      padding: 0.8rem;
+      font-size: 1rem;
+      margin: 1rem 0;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: white;
+      color: black;
+    }
+
+    html[data-theme='dark'] .dialog-input {
+      background-color: #2a2a2a;
+      color: var(--text-dark);
+      border: 1px solid #555;
+    }
+
+    ::placeholder {
+      color: #888;
+    }
+
+    html[data-theme="dark"] ::placeholder {
+      color: #aaa;
+    }
+
+    .submit-btn {
+      background-color: var(--green);
+      color: white;
+      padding: 0.6rem 1.2rem;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    .suggestions {
+      margin-top: 1rem;
+    }
+
+    .suggestions h4 {
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      color: var(--green);
+    }
+
+    .suggestions ul {
+      padding-left: 1.2rem;
+    }
+
+    .suggestions li {
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .suggestions li:hover {
+      text-decoration: underline;
+      color: var(--green);
+    }
+
+    .response-area {
+      margin-top: 1rem;
+      background: #f0f0f0;
+      padding: 1rem;
+      border-radius: 5px;
+      white-space: pre-wrap;
+      max-height: 250px;
+      overflow-y: auto;
+    }
+
+    html[data-theme='dark'] .response-area {
+      background: #2a2a2a;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    html[data-theme='dark'] footer {
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <button class="toggle-mode" onclick="toggleTheme()">Toggle Theme</button>
+
+  <div class="container">
+    <header>
+      <img src="/static/smartcity2.jpeg" class="logo-img" />
+      <h1>Sustainable Smart City Assistant</h1>
+      <p class="subtitle">Empowering citizens with intelligent urban solutions</p>
+    </header>
+
+    <div class="modules-grid">
+      <div class="module-card" onclick="openDialog('eco')">
+        <div class="module-icon"><i class="fas fa-leaf"></i></div>
+        <div>Eco Advice</div>
+      </div>
+      <div class="module-card" onclick="openDialog('health')">
+        <div class="module-icon"><i class="fas fa-heartbeat"></i></div>
+        <div>City Health</div>
+      </div>
+      <div class="module-card" onclick="openDialog('chat')">
+        <div class="module-icon"><i class="fas fa-comments"></i></div>
+        <div>Chat Assistant</div>
+      </div>
+      <div class="module-card" onclick="openDialog('feedback')">
+        <div class="module-icon"><i class="fas fa-comment-alt"></i></div>
+        <div>Feedback</div>
+      </div>
+      <div class="module-card" onclick="openDialog('summary')">
+        <div class="module-icon"><i class="fas fa-file-alt"></i></div>
+        <div>Summarizer</div>
+      </div>
+    </div>
+
+    <footer><p>© 2025 Sustainable Smart City Assistant</p></footer>
+  </div>
+
+  <div id="dialogs-container"></div>
+
+  <script>
+    const modules = {
+      eco: {
+        title: "Eco Advice",
+        endpoint: "/eco_advice",
+        placeholder: "Enter your eco-related query...",
+        suggestions: [
+          "Best ways to save energy at home",
+          "How to reduce plastic use?",
+          "Tips for water conservation"
+        ]
+      },
+      health: {
+        title: "City Health",
+        endpoint: "/city_health",
+        placeholder: "Ask about air quality, etc.",
+        suggestions: [
+          "Current AQI in my area",
+          "Is noise pollution rising?",
+          "Safe water zones today"
+        ]
+      },
+      chat: {
+        title: "Chat Assistant",
+        endpoint: "/chat_assistant",
+        placeholder: "Ask your question...",
+        suggestions: [
+          "Where is nearest EV charging station?",
+          "How to report garbage issue?",
+          "City smart card application"
+        ]
+      },
+      feedback: {
+        title: "Feedback",
+        endpoint: "/citizen_feedback",
+        placeholder: "Enter feedback...",
+        suggestions: []
+      },
+      summary: {
+        title: "Summarizer",
+        endpoint: "/summarize",
+        placeholder: "Paste document to summarize...",
+        suggestions: []
+      }
+    };
+
+    let chatHistory = {};
+
+    function openDialog(moduleId) {
+      const data = modules[moduleId];
+      const history = chatHistory[moduleId] || [];
+      const container = document.getElementById("dialogs-container");
+
+      const suggestionList = data.suggestions && data.suggestions.length > 0
+        ? `<div class="suggestions">
+             <h4>Suggestions:</h4>
+             <ul>${data.suggestions.map(s => `<li onclick="useSuggestion('${moduleId}', '${s.replace(/'/g, "\\'")}')">${s}</li>`).join('')}</ul>
+           </div>`
+        : "";
+
+      container.innerHTML = `
+        <div class="dialog-overlay active" onclick="event.target === this && closeDialog()">
+          <div class="dialog-box">
+            <h3>${data.title}</h3>
+            <textarea class="dialog-input" placeholder="${data.placeholder}"></textarea>
+            <button class="submit-btn" onclick="submitRequest('${moduleId}')">Submit</button>
+            ${suggestionList}
+            <div class="response-area" id="${moduleId}-response">${history.join("<hr>")}</div>
+          </div>
+        </div>`;
+    }
+
+    function useSuggestion(moduleId, text) {
+      document.querySelector('.dialog-input').value = text;
+    }
+
+    function closeDialog() {
+      document.getElementById("dialogs-container").innerHTML = "";
+    }
+
+    function submitRequest(moduleId) {
+      const inputField = document.querySelector('.dialog-input');
+      const input = inputField.value.trim();
+      const responseBox = document.getElementById(`${moduleId}-response`);
+      if (!input) return;
+
+      let payload = {};
+      if (["eco", "chat"].includes(moduleId)) payload.query = input;
+      else if (moduleId === "health") payload.question = input;
+      else if (moduleId === "feedback") payload.feedback = input;
+      else if (moduleId === "summary") payload.text = input;
+
+      responseBox.innerHTML += `<p><strong>You:</strong> ${input}</p><p><em>Processing...</em></p>`;
+      inputField.value = "";
+
+      fetch(modules[moduleId].endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        const responseText = data.response || "No response received.";
+        const bullets = formatAsBulletPoints(responseText);
+        const newHistory = `<p><strong>You:</strong> ${input}</p><p><strong>Assistant:</strong><br>${bullets}</p>`;
+        chatHistory[moduleId] = (chatHistory[moduleId] || []).concat(newHistory);
+        responseBox.innerHTML = chatHistory[moduleId].join("<hr>");
+        responseBox.scrollTop = responseBox.scrollHeight;
+      })
+      .catch(err => {
+        responseBox.innerHTML += `<p style="color:red;"><strong>Error:</strong> ${err.message}</p>`;
+      });
+    }
+
+    function formatAsBulletPoints(text) {
+      const lines = text.split('\n').filter(line => line.trim());
+      if (lines.length <= 1) return `<p>${text}</p>`;
+      return `<ul>${lines.map(line => `<li>${line.trim()}</li>`).join('')}</ul>`;
+    }
+
+    function toggleTheme() {
+      const html = document.documentElement;
+      html.dataset.theme = html.dataset.theme === "dark" ? "light" : "dark";
+      localStorage.setItem("theme", html.dataset.theme);
+    }
+
+    (function () {
+      const saved = localStorage.getItem("theme");
+      const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      document.documentElement.dataset.theme = saved || (prefersDark ? "dark" : "light");
+    })();
+  </script>
+</body>
+</html>
